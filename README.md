@@ -46,3 +46,7 @@ php-ext: mod_rewrite:  failed                  WARN
         ##   - headers
         ##   - authz_core
 
+
+BEFORE running update.yml make sure the admin user (admin center) can login
+succesfully.
+
