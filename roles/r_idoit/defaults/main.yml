@@ -1,0 +1,13 @@
+idoit_version: "35"
+idoit_system_database: "idoit_system"
+# DB CONFIG
+db_user: "idoit"
+# db_password: Undefined e.g. required
+db_host: "127.0.0.1"
+# IDOIT ADMIN CENTER
+idoit_admin_center_password: "{{ lookup('ansible.builtin.env', 'IDOIT_ADMIN_CENTER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_admin_center_password.txt', length=32, chars=['ascii_letters']) }}"
+idoit_admin_center_user: "admin"
+idoit_download_url: "https://login.i-doit.com/downloads/idoit-open-{{ idoit_version }}.zip"
+# INTERNAL VARS FOR UPDATE
+update_dir: "/tmp/idoit/update"
+versions_dir: "{{ update_dir }}/versions"

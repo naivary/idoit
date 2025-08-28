@@ -1,0 +1,33 @@
+- name: "Get i-doit software v{{ idoit_version }}"
+  ansible.builtin.get_url:
+    url: "{{ idoit_download_url }}"
+    dest: "/tmp"
+- name: "Unzip to /var/www/html"
+  ansible.builtin.unarchive:
+    remote_src: yes
+    src: "/tmp/idoit-open-{{ idoit_version }}.zip"
+    dest: "/var/www/html"
+    owner: "www-data"
+    group: "www-data"
+- name: Set permissions for directories
+  ansible.builtin.file:
+    path: "/var/www/html"
+    mode: '0775'
+    recurse: yes
+    state: directory
+- name: Install i-doit
+  ansible.builtin.command:
+  args:
+    chdir: "/var/www/html"
+    argv:
+      - sudo
+      - php
+      - console.php
+      - install
+      - --no-interaction
+      - "--root-user={{ db_user }}"
+      - "--root-password={{ db_password }}"
+      - "--host={{ db_host }}"
+      - "--password={{ db_password }}"
+      - "--admin-password={{ idoit_admin_center_password }}"
+      - "--database={{ idoit_system_database }}"

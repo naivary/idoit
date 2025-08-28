@@ -1,0 +1,22 @@
+argument_specs:
+  main:
+    short_description: installation of a MariaDB Server
+    author:
+      - mustafa.hussain@etomer.com
+    options:
+      mariadb_global_vars:
+        type: "list"
+        elements: "str"
+        description: "list of global variables to set for the MariaDB Server"
+      mariadb_conf_dest:
+        type: "str"
+        description: "destination of the MariaDB config file"
+      mariadb_bind_address:
+        type: "str"
+        description: "network address of the MariaDB Server"
+      mariadb_version:
+        type: "str"
+        description: "version of MariaDB to install"
+      mariadb_root_password:
+        type: "str"
+        description: "password to use and set for the root user of the MariaDB server. Make sure to use something secure and strong"

@@ -1,0 +1,20 @@
+- name: Install apache server
+  ansible.builtin.apt:
+    pkg:
+      - apache2
+      - "libapache2-mod-fcgid"
+- name: Disable default VHOST
+  ansible.builtin.command: sudo a2dissite 000-default
+- name: Add new VHOSTs
+  ansible.builtin.template:
+    src: templates/apache.conf.j2
+    dest: "{{ apache_conf_dest }}"
+- name: Enable new VHOST Site
+  ansible.builtin.command: sudo a2dissite i-doit
+- name: Enable required Apache Modules
+  ansible.builtin.command: "sudo a2enmod {{ item }}"
+  loop: "{{ apache_modules }}"
+- name: Restart Apache Service
+  ansible.builtin.service:
+    name: apache2
+    state: restarted

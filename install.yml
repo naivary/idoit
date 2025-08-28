@@ -1,0 +1,75 @@
+- name: Prepare all hosts for installation
+  hosts: all
+  vars:
+    apt_pkgs:
+      - "python3-pymysql=1.0.2-2ubuntu1.1"
+      - "unzip"
+      - "moreutils"
+  tasks:
+    - name: Update and Upgrade APT Packages
+      ansible.builtin.apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+    - name: Install required APT Packages
+      ansible.builtin.apt:
+        pkg: "{{ apt_pkgs }}"
+    - name: debug
+      debug:
+        var: ansible_all_ipv4_addresses
+- name: Install MariaDB
+  hosts: mariadb
+  vars:
+    idoit_db_user: "{{ lookup('ansible.builtin.env', 'IDOIT_DB_USER') | default('idoit', true) }}"
+    idoit_db_user_password: "{{ lookup('ansible.builtin.env', 'IDOIT_DB_USER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_db_user_password.txt', length=32, chars=['ascii_letters']) }}"
+  tasks:
+    - name: Install MariaDB
+      ansible.builtin.import_role:
+        name: r_mariadb
+      vars:
+        mariadb_bind_address: "0.0.0.0"
+    # RN the created user is 'idoit'@'%'. Is this a security risk?
+    - name: Create i-doit Database User with needed priviliges
+      community.mysql.mysql_user:
+        login_unix_socket: "/var/run/mysqld/mysqld.sock"
+        name: "{{ idoit_db_user }}"
+        password: "{{ idoit_db_user_password }}"
+        host: "%"
+        priv: "*.*:ALL,GRANT"
+        state: present
+- name: Install i-doit
+  hosts: idoit
+  vars:
+    idoit_db_user_password: "{{ lookup('ansible.builtin.env', 'IDOIT_DB_USER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_db_user_password.txt', length=32, chars=['ascii_letters']) }}"
+  tasks:
+    - name: Install PHP and required PHP mods and packages
+      ansible.builtin.import_role:
+        name: r_php
+    - name: Install Apache Server
+      ansible.builtin.import_role:
+        name: r_apache
+    - name: Install i-doit
+      ansible.builtin.import_role:
+        name: r_idoit
+        tasks_from: install.yml
+      vars:
+        idoit_backup_src: "backup/idoit_v26.sql"
+        db_host: "192.168.56.41"
+        db_password: "{{ idoit_db_user_password }}"
+- name: Restore i-doit backup
+  hosts: mariadb
+  vars:
+    idoit_backup_src: "backup/idoit_v26.sql"
+  tasks:
+    - name: Copy idoit backup file
+      ansible.builtin.copy:
+        src: "{{ idoit_backup_src }}"
+        dest: /tmp
+      when: "idoit_backup_src != ''"
+    - name: Restore Data from Backup
+      community.mysql.mysql_db:
+        login_unix_socket: "/var/run/mysqld/mysqld.sock"
+        name: all
+        state: import
+        target: "/tmp/{{ idoit_backup_src | basename }}"
+      when: "idoit_backup_src != ''"
