@@ -2,7 +2,7 @@
   hosts: all
   vars:
     apt_pkgs:
-      - "python3-pymysql=1.0.2-2ubuntu1.1"
+      - "python3-pymysql"
       - "unzip"
       - "moreutils"
   tasks:
@@ -14,9 +14,6 @@
     - name: Install required APT Packages
       ansible.builtin.apt:
         pkg: "{{ apt_pkgs }}"
-    - name: debug
-      debug:
-        var: ansible_all_ipv4_addresses
 - name: Install MariaDB
   hosts: mariadb
   vars:
@@ -28,7 +25,6 @@
         name: r_mariadb
       vars:
         mariadb_bind_address: "0.0.0.0"
-    # RN the created user is 'idoit'@'%'. Is this a security risk?
     - name: Create i-doit Database User with needed priviliges
       community.mysql.mysql_user:
         login_unix_socket: "/var/run/mysqld/mysqld.sock"

@@ -1,3 +1,7 @@
+- name: Add php repository
+  ansible.builtin.apt_repository:
+    repo: "ppa:ondrej/php"
+    state: present
 - name: Install PHP and Required PHP packages
   ansible.builtin.apt:
     pkg: "{{ php_pkgs }}"
