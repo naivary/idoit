@@ -1,8 +1,8 @@
 php_version: "8.3"
 php_mods_conf_dest: "/etc/php/{{ php_version }}/mods-available/i-doit.ini"
-php_fpm_conf_dest: "/etc/php/{{ php_version }}/fpm/i-doit.conf"
+php_fpm_conf_dest: "/etc/php/{{ php_version }}/fpm/pool.d/i-doit.conf"
 php_pkgs:
-  - "php=2:{{ php_version }}+93ubuntu2"
+  - "php{{ php_version }}"
   - "php{{ php_version }}-bcmath"
   - "php{{ php_version }}-cli"
   - "php{{ php_version }}-common"

@@ -42,6 +42,6 @@ check them by running the following query on the `idoit_system` database:
 ```sql
 USE idoit_system;
 SELECT isys_mandator__title, isys_mandator__db_host, isys_mandator__db_port, isys_mandator__db_name, isys_mandator__db_user, isys_mandator__db_pass, isys_mandator__apikey FROM isys_mandator;
+UPDATE isys_mandator SET isys_mandator__db_host = '192.168.56.41', isys_mandator__db_pass = '';
 ```
-
 

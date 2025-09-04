@@ -7,11 +7,11 @@
     pkg: "{{ php_pkgs }}"
 - name: Copy PHP Mods Config
   ansible.builtin.template:
-    src: configs/php_mods.ini.j2
+    src: templates/php_mods.ini.j2
     dest: "{{ php_mods_conf_dest }}"
 - name: Copy PHP FPM Config
   ansible.builtin.template:
-    src: configs/php_fpm.conf.j2
+    src: templates/php_fpm.conf.j2
     dest: "{{ php_fpm_conf_dest }}"
 - name: Enable PHP mods
   ansible.builtin.command: sudo phpenmod i-doit memcached
