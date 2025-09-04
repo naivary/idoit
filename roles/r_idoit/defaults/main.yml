@@ -1,9 +1,9 @@
 idoit_version: "35"
 idoit_system_database: "idoit_system"
 # DB CONFIG
-db_user: "idoit"
-# db_password: Undefined e.g. required
-db_host: "127.0.0.1"
+idoit_db_user: "idoit"
+idoit_db_user_password: ""
+mariadb_host: "127.0.0.1"
 # IDOIT ADMIN CENTER
 idoit_admin_center_password: "{{ lookup('ansible.builtin.env', 'IDOIT_ADMIN_CENTER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_admin_center_password.txt', length=32, chars=['ascii_letters']) }}"
 idoit_admin_center_user: "admin"

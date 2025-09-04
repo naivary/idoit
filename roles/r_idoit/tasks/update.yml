@@ -1,8 +1,8 @@
 - name: Extract current i-doit version from database
   community.mysql.mysql_query:
-    login_host: "{{ db_host }}"
-    login_user: "{{ db_user }}"
-    login_password: "{{ db_password }}"
+    login_host: "{{ mariadb_host }}"
+    login_user: "{{ idoit_db_user }}"
+    login_password: "{{ idoit_db_user_password }}"
     login_db: "{{ idoit_system_database }}"
     query: "SELECT isys_db_init__value AS current_version FROM isys_db_init WHERE isys_db_init__id = 3"
   register: idoit_version
@@ -14,7 +14,6 @@
     that:
       - "desired_version > (current_version | int)"
       - "(desired_version - (current_version | int)) <= 3"
-      - ""
     fail_msg: "you can not update to a version which is lower than your current version. from: {{ current_version }}; to: {{ desired_version }}"
 - name: Create update directory
   ansible.builtin.file:

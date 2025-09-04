@@ -50,10 +50,6 @@
       ansible.builtin.import_role:
         name: r_idoit
         tasks_from: install.yml
-      vars:
-        idoit_backup_src: "backup/idoit_v26.sql"
-        db_host: "192.168.56.41"
-        db_password: "{{ idoit_db_user_password }}"
 - name: Restore i-doit backup
   hosts: mariadb
   tasks:

@@ -25,9 +25,9 @@
       - console.php
       - install
       - --no-interaction
-      - "--root-user={{ db_user }}"
-      - "--root-password={{ db_password }}"
-      - "--host={{ db_host }}"
-      - "--password={{ db_password }}"
+      - "--root-user={{ idoit_db_user }}"
+      - "--root-password={{ idoit_db_user_password }}"
+      - "--host={{ mariadb_host }}"
+      - "--password={{ idoit_db_user_password }}"
       - "--admin-password={{ idoit_admin_center_password }}"
       - "--database={{ idoit_system_database }}"
