@@ -16,10 +16,10 @@
         pkg: "{{ apt_pkgs }}"
 - name: Install MariaDB
   hosts: mariadb
-  vars:
-    idoit_db_user: "{{ lookup('ansible.builtin.env', 'IDOIT_DB_USER') | default('idoit', true) }}"
-    idoit_db_user_password: "{{ lookup('ansible.builtin.env', 'IDOIT_DB_USER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_db_user_password.txt', length=32, chars=['ascii_letters']) }}"
   tasks:
+    - name: Include variables
+      ansible.builtin.include_vars:
+        file: "vars/idoit.yml"
     - name: Install MariaDB
       ansible.builtin.import_role:
         name: r_mariadb
@@ -36,8 +36,10 @@
 - name: Install i-doit
   hosts: idoit
   vars:
-    idoit_db_user_password: "{{ lookup('ansible.builtin.env', 'IDOIT_DB_USER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_db_user_password.txt', length=32, chars=['ascii_letters']) }}"
   tasks:
+    - name: Include variables
+      ansible.builtin.include_vars:
+        file: "vars/idoit.yml"
     - name: Install PHP and required PHP mods and packages
       ansible.builtin.import_role:
         name: r_php
@@ -54,9 +56,10 @@
         db_password: "{{ idoit_db_user_password }}"
 - name: Restore i-doit backup
   hosts: mariadb
-  vars:
-    idoit_backup_src: "backup/idoit_v26.sql"
   tasks:
+    - name: Include variables
+      ansible.builtin.include_vars:
+        file: "vars/idoit.yml"
     - name: Copy idoit backup file
       ansible.builtin.copy:
         src: "{{ idoit_backup_src }}"
