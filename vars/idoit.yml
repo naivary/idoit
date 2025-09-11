@@ -12,10 +12,10 @@ idoit_admin_center_password: "{{ lookup('ansible.builtin.env', 'IDOIT_ADMIN_CENT
 mariadb_global_vars:
   - "innodb_fast_shutdown=0"
 mariadb_conf_dest: "/etc/mysql/my.cnf"
-mariadb_bind_address: "localhost"
+mariadb_bind_address: "0.0.0.0"
 mariadb_version: "11.4.8"
 mariadb_root_password: "{{ lookup('ansible.builtin.env', 'MARIADB_ROOT_PASSWORD') or lookup('ansible.builtin.password', 'mariadb_root_password.txt', length=32, chars=['ascii_letters']) }}"
-mariadb_host: "127.0.0.1"
+mariadb_host: "192.168.56.41"
 # PHP Configs
 php_version: "8.3"
 php_pkgs:

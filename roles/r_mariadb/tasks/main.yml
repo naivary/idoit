@@ -25,8 +25,7 @@
     query: "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('{{ mariadb_root_password }}')"
 - name: Set Global MariaDB Variables
   community.mysql.mysql_variables:
-    login_host: "{{ mariadb_host }}"
-    login_user: root
+    login_unix_socket: "/var/run/mysqld/mysqld.sock"
     login_password: "{{ mariadb_root_password }}"
     variable: "{{ item | split('=') | first }}"
     value: "{{ item | split('=') | last }}"
@@ -40,8 +39,7 @@
 # 3. Remove test database (default 11.4).
 - name: Remove all Annoymous Users
   community.mysql.mysql_user:
-    login_host: "{{ mariadb_host }}"
-    login_user: root
+    login_unix_socket: "/var/run/mysqld/mysqld.sock"
     login_password: "{{ mariadb_root_password }}"
     name: ""
     state: absent
