@@ -24,6 +24,7 @@
       ansible.builtin.import_role:
         name: r_mariadb
       vars:
+        # TODO: spezifische IP von wo wir kommen!
         mariadb_bind_address: "0.0.0.0"
     - name: Create i-doit Database User with needed priviliges
       community.mysql.mysql_user:
@@ -50,9 +51,17 @@
       ansible.builtin.import_role:
         name: r_idoit
         tasks_from: install.yml
+# TODO: Prompt erstellen der fragt ob er das Backup einspielen soll oder sagt
+# das kann backup da ist und es nicht eingespielt wird!
 - name: Restore i-doit backup
   hosts: mariadb
   tasks:
+    - name: Assure backup recovery is intended
+      ansible.builtin.pause:
+        prompt: |
+          Im nächsten schritt wird das Backup unter dem Pfad: {{ idoit_backup_src }} eingespielt. Stellen Sie sicher das die Datei vorhanden ist, falls die Wiederherstellung von einem Backup gewünscht ist. 
+          Yes/No
+        echo: yes
     - name: Include variables
       ansible.builtin.include_vars:
         file: "vars/idoit.yml"

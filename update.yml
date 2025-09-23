@@ -8,6 +8,7 @@
       - 34
       - 35
   tasks:
+    # TODO: Update von apache, php etc. braucht man weiterhin
     - name: Include variables
       ansible.builtin.include_vars:
         file: "vars/idoit.yml"

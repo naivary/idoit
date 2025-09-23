@@ -1,13 +1,64 @@
-idoit_version: "35"
-idoit_system_database: "idoit_system"
-# DB CONFIG
-idoit_db_user: "idoit"
-idoit_db_user_password: ""
-mariadb_host: "127.0.0.1"
-# IDOIT ADMIN CENTER
-idoit_admin_center_password: "{{ lookup('ansible.builtin.env', 'IDOIT_ADMIN_CENTER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_admin_center_password.txt', length=32, chars=['ascii_letters']) }}"
-idoit_admin_center_user: "admin"
 idoit_download_url: "https://login.i-doit.com/downloads/idoit-open-{{ idoit_version }}.zip"
-# INTERNAL VARS FOR UPDATE
 update_dir: "/tmp/idoit/update"
 versions_dir: "{{ update_dir }}/versions"
+idoit_comp_matrix:
+  27:
+    php_version: 8.1
+    mariadb_version: 10.6
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [20, 21, 22, 23, 24, 25, 26]
+  28:
+    php_version: 8.1
+    mariadb_version: 10.6
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [20, 21, 22, 23, 24, 25, 26, 27]
+  29:
+    php_version: 8.2
+    mariadb_version: 10.6
+    apache_version: 2.4
+    can_skip_update: false
+    from_versions: [20, 21, 22, 23, 24, 25, 26, 27, 28]
+  30:
+    php_version: 8.2
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29]
+  31:
+    php_version: 8.2
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30]
+  32:
+    php_version: 8.2
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30, 31]
+  33:
+    php_version: 8.3
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30, 31, 32]
+  34:
+    php_version: 8.3
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30, 31, 32, 33]
+  35:
+    php_version: 8.3
+    mariadb_version: 11.4
+    apache_version: 2.4
+    can_skip_update: false
+    from_versions: [29, 30, 31, 32, 33, 34]
+  36:
+    php_version: 8.4
+    mariadb_version: 11.4
+    apache_version: 2.4
+    can_skip_update: false
+    from_versions: [35]
