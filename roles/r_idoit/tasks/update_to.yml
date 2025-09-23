@@ -1,0 +1,57 @@
+- name: Extract current i-doit version from database
+  community.mysql.mysql_query:
+    login_host: "{{ mariadb_host }}"
+    login_user: "{{ idoit_db_user }}"
+    login_password: "{{ idoit_db_user_password }}"
+    login_db: "{{ idoit_system_database }}"
+    query: "SELECT isys_db_init__value AS current_version FROM isys_db_init WHERE isys_db_init__id = 3"
+  register: idoit_version
+- name: Set current i-doit version as fact for the host
+  ansible.builtin.set_fact:
+    current_version: "{{ idoit_version['query_result'][0][0].current_version }}"
+- name: Create update directory
+  ansible.builtin.file:
+    path: "{{ update_dir }}"
+    state: directory
+- name: Download required version zip file
+  ansible.builtin.get_url:
+    url: "https://kb.i-doit.com/de/assets/downloads/dl-archive/idoit-{{ to_version }}-update.zip"
+    dest: "{{ update_dir }}"
+    mode: "0755"
+- name: "Create version directory"
+  ansible.builtin.file:
+    path: "{{ versions_dir }}/v{{ to_version }}"
+    state: directory
+- name: "Unzip downloaded version"
+  ansible.builtin.unarchive:
+    remote_src: true
+    src: "{{ update_dir }}/idoit-{{ to_version }}-update.zip"
+    dest: "{{ versions_dir }}/v{{ to_version }}"
+- name: "Copy version to /var/www/html"
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ versions_dir }}/v{{ to_version }}/updates/versions/{{ to_version }}/"
+    dest: "/var/www/html/updates/versions/v{{ to_version }}"
+- name: "Remove undefined constant from source code (bug in v26 of i-doit)"
+  ansible.builtin.lineinfile:
+    path: "{{ item }}"
+    search_string: "const AUTH_DOMAIN = self::AUTH_DOMAIN_SYSTEM;"
+    state: absent
+  when: "{{ (current_version | int) == 26 }}"
+  loop:
+    - "/var/www/html/src/idoit/Console/Command/Idoit/FeatureManagerCommand.php"
+    - "/var/www/html/src/idoit/Console/Command/Idoit/SetEnvVarCommand.php"
+- name: "Update i-doit from {{ current_version }} to {{ to_version }}"
+  ansible.builtin.command:
+  args:
+    chdir: "/var/www/html"
+    argv:
+      - sudo
+      - php
+      - console.php
+      - update
+      - --no-interaction
+      - "--user={{ idoit_admin_center_user }}"
+      - "--password={{ idoit_admin_center_password }}"
+      - "--zip={{ update_dir }}/idoit-{{ to_version }}-update.zip"
+      - "--v=v{{ to_version }}"

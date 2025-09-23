@@ -1,21 +1,12 @@
 - name: Update i-doit
   hosts: idoit
   vars:
-    versions:
-      - 29
-      - 30
-      - 33
-      - 34
-      - 35
+    to_version: 37
   tasks:
     # TODO: Update von apache, php etc. braucht man weiterhin
-    - name: Include variables
-      ansible.builtin.include_vars:
-        file: "vars/idoit.yml"
-    - name: "Update i-doit in the following order {{ versions }}"
+    - name: "Update i-doit to {{ to_version }}"
       ansible.builtin.include_role:
         name: r_idoit
         tasks_from: update.yml
       vars:
-        desired_version: "{{ item }}"
-      loop: "{{ versions }}"
+        desired_version: "{{ to_version }}" 

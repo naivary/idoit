@@ -1,6 +1,8 @@
 idoit_download_url: "https://login.i-doit.com/downloads/idoit-open-{{ idoit_version }}.zip"
 update_dir: "/tmp/idoit/update"
 versions_dir: "{{ update_dir }}/versions"
+latest: "{{ idoit_comp_matrix.keys() | list | sort | last }}"
+desired_version: "{{ latest }}"
 idoit_comp_matrix:
   27:
     php_version: 8.1

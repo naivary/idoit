@@ -17,9 +17,6 @@
 - name: Install MariaDB
   hosts: mariadb
   tasks:
-    - name: Include variables
-      ansible.builtin.include_vars:
-        file: "vars/idoit.yml"
     - name: Install MariaDB
       ansible.builtin.import_role:
         name: r_mariadb
@@ -38,9 +35,6 @@
   hosts: idoit
   vars:
   tasks:
-    - name: Include variables
-      ansible.builtin.include_vars:
-        file: "vars/idoit.yml"
     - name: Install PHP and required PHP mods and packages
       ansible.builtin.import_role:
         name: r_php
@@ -58,13 +52,8 @@
   tasks:
     - name: Assure backup recovery is intended
       ansible.builtin.pause:
-        prompt: |
-          Im nächsten schritt wird das Backup unter dem Pfad: {{ idoit_backup_src }} eingespielt. Stellen Sie sicher das die Datei vorhanden ist, falls die Wiederherstellung von einem Backup gewünscht ist. 
-          Yes/No
+        prompt: "Im nächsten schritt wird das Backup unter dem Pfad: {{ idoit_backup_src }} eingespielt. Stellen Sie sicher das die Datei vorhanden ist, falls die Wiederherstellung von einem Backup gewünscht ist. \nYes/No"
         echo: yes
-    - name: Include variables
-      ansible.builtin.include_vars:
-        file: "vars/idoit.yml"
     - name: Copy idoit backup file
       ansible.builtin.copy:
         src: "{{ idoit_backup_src }}"
