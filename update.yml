@@ -1,7 +1,7 @@
 - name: Update i-doit
   hosts: idoit
   vars:
-    to_version: 37
+    to_version: 36
   tasks:
     # TODO: Update von apache, php etc. braucht man weiterhin
     - name: "Update i-doit to {{ to_version }}"

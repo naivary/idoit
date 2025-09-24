@@ -3,18 +3,18 @@ idoit_version: "35"
 idoit_backup_src: "backup/idoit_v26.sql"
 ### database config
 idoit_db_user: "idoit"
-idoit_db_user_password: "{{ lookup('ansible.builtin.env', 'IDOIT_DB_USER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_db_user_password.txt', length=32, chars=['ascii_letters']) }}"
+idoit_db_user_password: "idoit"
 idoit_system_database: "idoit_system"
 ### Admin center
 idoit_admin_center_user: "admin"
-idoit_admin_center_password: "{{ lookup('ansible.builtin.env', 'IDOIT_ADMIN_CENTER_PASSWORD') or lookup('ansible.builtin.password', 'idoit_admin_center_password.txt', length=32, chars=['ascii_letters']) }}"
+idoit_admin_center_password: "admin"
 ## MariaDB vars
 mariadb_global_vars:
   - "innodb_fast_shutdown=0"
 mariadb_conf_dest: "/etc/mysql/my.cnf"
 mariadb_bind_address: "0.0.0.0"
 mariadb_version: "11.4.8"
-mariadb_root_password: "{{ lookup('ansible.builtin.env', 'MARIADB_ROOT_PASSWORD') or lookup('ansible.builtin.password', 'mariadb_root_password.txt', length=32, chars=['ascii_letters']) }}"
+mariadb_root_password: "root"
 mariadb_host: "192.168.56.41"
 # PHP Configs
 php_version: "8.3"
