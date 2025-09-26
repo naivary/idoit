@@ -1,10 +1,5 @@
 - name: Prepare all hosts for installation
   hosts: all
-  vars:
-    apt_pkgs:
-      - "python3-pymysql"
-      - "unzip"
-      - "moreutils"
   tasks:
     - name: Update and Upgrade APT Packages
       ansible.builtin.apt:
@@ -13,7 +8,7 @@
         cache_valid_time: 86400
     - name: Install required APT Packages
       ansible.builtin.apt:
-        pkg: "{{ apt_pkgs }}"
+        pkg: "{{ __apt_pkgs }}"
 - name: Install MariaDB
   hosts: mariadb
   tasks:
@@ -47,6 +42,7 @@
 - name: Restore i-doit backup
   hosts: mariadb
   tasks:
+    ## TODO: should allow abortion
     - name: Assure backup recovery is intended
       ansible.builtin.pause:
         prompt: "Im nächsten schritt wird das Backup unter dem Pfad: {{ idoit_backup_src }} eingespielt. Stellen Sie sicher das die Datei vorhanden ist, falls die Wiederherstellung von einem Backup gewünscht ist. \nYes/No"

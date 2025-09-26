@@ -137,7 +137,7 @@
 
     <FilesMatch "\\.php$">
         <If "-f %{REQUEST_FILENAME}">
-            SetHandler "proxy:unix:/var/run/php/php8.3-fpm.sock|fcgi://localhost"
+            SetHandler "proxy:unix:/var/run/php/php{{ php_version }}-fpm.sock|fcgi://localhost"
         </If>
     </FilesMatch>
 

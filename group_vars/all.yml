@@ -11,14 +11,16 @@ idoit_admin_center_password: "admin"
 ## MariaDB vars
 mariadb_global_vars:
   - "innodb_fast_shutdown=0"
-mariadb_conf_dest: "/etc/mysql/my.cnf"
 mariadb_bind_address: "0.0.0.0"
 mariadb_version: "11.4.8"
 mariadb_root_password: "root"
 mariadb_host: "192.168.56.41"
-# PHP Configs
-php_version: "8.3"
-php_pkgs:
+## PRIVATE VARS
+__apt_pkgs:
+  - "python3-pymysql"
+  - "unzip"
+  - "moreutils"
+__php_pkgs:
   - "php{{ php_version }}"
   - "php{{ php_version }}-bcmath"
   - "php{{ php_version }}-cli"
@@ -36,3 +38,64 @@ php_pkgs:
   - "php{{ php_version }}-xml"
   - "php{{ php_version }}-zip"
   - "memcached"
+__idoit_comp_matrix:
+  27:
+    php_version: 8.1
+    mariadb_version: 10.6
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [20, 21, 22, 23, 24, 25, 26]
+  28:
+    php_version: 8.1
+    mariadb_version: 10.6
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [20, 21, 22, 23, 24, 25, 26, 27]
+  29:
+    php_version: 8.2
+    mariadb_version: 10.6
+    apache_version: 2.4
+    can_skip_update: false
+    from_versions: [20, 21, 22, 23, 24, 25, 26, 27, 28]
+  30:
+    php_version: 8.2
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29]
+  31:
+    php_version: 8.2
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30]
+  32:
+    php_version: 8.2
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30, 31]
+  33:
+    php_version: 8.3
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30, 31, 32]
+  34:
+    php_version: 8.3
+    mariadb_version: 10.11
+    apache_version: 2.4
+    can_skip_update: true
+    from_versions: [29, 30, 31, 32, 33]
+  35:
+    php_version: 8.3
+    mariadb_version: 11.4
+    apache_version: 2.4
+    can_skip_update: false
+    from_versions: [29, 30, 31, 32, 33, 34]
+  36:
+    php_version: 8.4
+    mariadb_version: 11.4
+    apache_version: 2.4
+    can_skip_update: false
+    from_versions: [35]
