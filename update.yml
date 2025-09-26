@@ -1,12 +1,67 @@
 - name: Update i-doit
   hosts: idoit
-  vars:
-    to_version: 36
   tasks:
-    # TODO: Update von apache, php etc. braucht man weiterhin
-    - name: "Update i-doit to {{ to_version }}"
+    # No update can be done if the desired version is not in comp_matrix
+    - name: Is Idoit Version available
+      ansible.builtin.assert:
+        that:
+          - "idoit_version in __idoit_comp_matrix"
+        fail_msg: "Version {{ idoit_version }} is not supported. It might be that the version is already available on the official website but not implemented by the playbook."
+    ## Extract all versions of the core components
+    - name: Extract current RDBMS version
+      community.mysql.mysql_query:
+        login_host: "{{ mariadb_host }}"
+        login_user: "{{ idoit_db_user }}"
+        login_password: "{{ idoit_db_user_password }}"
+        login_db: "{{ idoit_system_database }}"
+        query: "SELECT VERSION() as rdbms_version"
+      register: rdbms_version_not_fmt
+    - name: Set current rdbms version as a fact for the host
+      ansible.builtin.set_fact:
+        rdbms_version: "{{ rdbms_version_not_fmt['query_result'][0][0].rdbms_version | split('-') | first | split('.') | slice(2) | first | join('.') }}"
+    - name: Extract current PHP version
+      ansible.builtin.command: php -r 'echo PHP_VERSION;'
+      register: php_version_cmd
+    - name: Set current PHP version as fact for the host
+      ansible.builtin.set_fact:
+        system_php_version: "{{ php_version_cmd.stdout.split('.')[:-1] | join('.') }}"
+    - name: Extract current i-doit version from database
+      community.mysql.mysql_query:
+        login_host: "{{ mariadb_host }}"
+        login_user: "{{ idoit_db_user }}"
+        login_password: "{{ idoit_db_user_password }}"
+        login_db: "{{ idoit_system_database }}"
+        query: "SELECT isys_db_init__value AS current_version FROM isys_db_init WHERE isys_db_init__id = 3"
+      register: idoit_version
+    - name: Set current i-doit version as fact for the host
+      ansible.builtin.set_fact:
+        system_idoit_version: "{{ idoit_version['query_result'][0][0].current_version }}"
+    ## Assert if update is valid
+    - name: Is desired version higher than current version
+      ansible.builtin.assert:
+        that:
+          - "idoit_version > (system_idoit_version | int)"
+        fail_msg: "you can not update to a version which is lower or equal to the current version. From: {{ current_version }}; To: {{ desired_version }}"
+    - name: Is RDBMS version compatible
+      ansible.builtin.assert:
+        that:
+          - "idoit_comp_matrix[desired_version].mariadb_version <= (rdbms_version | float)"
+        fail_msg: "incompatible database versions. Have: {{ rdbms_version }}; Want: {{ idoit_comp_matrix[desired_version].mariadb_version }}"
+    ## Compute required update path to the desired_version
+    - name: "Compute required update path from {{ system_idoit_version }} to {{ idoit_version }}"
+      ansible.builtin.set_fact:
+        update_path: "{{ __idoit_comp_matrix | updatepath(system_idoit_version, idoit_version) }}"
+    - name: "Update PHP version from {{ system_php_version }} to {{ __php_version }}"
+      ansible.builtin.import_role:
+        name: r_php
+      vars:
+        php_version: "{{ target_php_version }}"
+      when: "(__php_version | float) > (system_php_version | float)"
+    ## Run the update
+    - name: "Update i-doit version from {{ system_idoit_version }} to {{ idoit_version }} in the following order: {{ update_path | join('->') }}"
       ansible.builtin.include_role:
         name: r_idoit
-        tasks_from: update.yml
+        tasks_from: update_to.yml
       vars:
-        desired_version: "{{ to_version }}" 
+        to_version: "{{ item }}"
+      loop: "{{ update_path }}"

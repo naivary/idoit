@@ -1,5 +1,5 @@
 ## i-doit config
-idoit_version: "{{ __idoit_comp_matrix.keys() | list | sort | last }}"
+idoit_version: "35"
 idoit_backup_src: "backup/idoit_v26.sql"
 ### database config
 idoit_db_user: "idoit"
@@ -17,9 +17,9 @@ mariadb_global_vars:
 ## Apache
 apache_server_admin: "vodafone@i-doit.de"
 ### PRIVATE VARS
-__php_version: "{{ __idoit_comp_matrix[idoit_version] }}"
-__apache_version: "{{ __idoit_comp_matrix[idoit_version] }}"
-__mariadb_version: "{{ __idoit_comp_matrix[idoit_version] }}"
+__php_version: "{{ __idoit_comp_matrix[(idoit_version | int)].php_version }}"
+__apache_version: "{{ __idoit_comp_matrix[(idoit_version | int)].apache_version }}"
+__mariadb_version: "{{ __idoit_comp_matrix[(idoit_version | int)].mariadb_version }}"
 __mariadb_socket: "/var/run/mysqld/mysqld.sock"
 __apt_pkgs:
   - "python3-pymysql"

@@ -1,4 +1,3 @@
-__php_version: "{{ __idoit_comp_matrix[idoit_version] }}"
 __php_mods_conf_dest: "/etc/php/{{ __php_version }}/mods-available/i-doit.ini"
 __php_fpm_conf_dest: "/etc/php/{{ __php_version }}/fpm/pool.d/i-doit.conf"
 __php_pkgs:
