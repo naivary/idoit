@@ -1,6 +1,5 @@
-apache_conf_dest: "/etc/apache2/sites-available/i-doit.conf"
-apache_server_admin: "vodafone@i-doit.de"
-apache_modules:
+__apache_conf_dest: "/etc/apache2/sites-available/i-doit.conf"
+__apache_modules:
   - rewrite
   - proxy_fcgi
   - setenvif

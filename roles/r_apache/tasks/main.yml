@@ -1,8 +1,7 @@
 - name: Install apache server
   ansible.builtin.apt:
-    pkg:
-      - apache2
-      - "libapache2-mod-fcgid"
+    name: apache2
+    state: present
 - name: Disable default VHOST
   ansible.builtin.command: sudo a2dissite 000-default
 - name: Add new VHOSTs

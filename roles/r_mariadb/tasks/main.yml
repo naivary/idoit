@@ -1,31 +1,29 @@
-- name: Include internal variables
-  ansible.builtin.include_vars: "vars/internal.yaml"
 - name: Adding MariaDB GPG Key
   ansible.builtin.apt_key:
-    url: "{{ mariadb_gpg_key_url }}"
+    url: "{{ __mariadb_gpg_key_url }}"
     state: present
 - name: Add MariaDB APT Repo
   ansible.builtin.apt_repository:
     repo: "{{ item }}"
     state: present
-  loop: "{{ mariadb_apt_repos }}"
+  loop: "{{ __mariadb_apt_repos }}"
 - name: "Install MariaDB-[Server,Client,Backup]"
   ansible.builtin.apt:
     pkg:
-      - "mariadb-server={{ mariadb_apt_version }}"
-      - "mariadb-client={{ mariadb_apt_version }}"
-      - "mariadb-backup={{ mariadb_apt_version }}"
+      - "mariadb-server={{ __mariadb_apt_version }}"
+      - "mariadb-client={{ __mariadb_apt_version }}"
+      - "mariadb-backup={{ __mariadb_apt_version }}"
 - name: Copy MariaDB Config
   ansible.builtin.template:
     src: "templates/mariadb.cnf.j2"
-    dest: "{{ mariadb_conf_dest }}"
+    dest: "{{ __mariadb_conf_dest }}"
 - name: Change root password of MariaDB
   community.mysql.mysql_query:
-    login_unix_socket: "/var/run/mysqld/mysqld.sock"
+    login_unix_socket: "{{ __mariadb_socket }}"
     query: "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('{{ mariadb_root_password }}')"
 - name: Set Global MariaDB Variables
   community.mysql.mysql_variables:
-    login_unix_socket: "/var/run/mysqld/mysqld.sock"
+    login_unix_socket: "{{ __mariadb_socket }}"
     login_password: "{{ mariadb_root_password }}"
     variable: "{{ item | split('=') | first }}"
     value: "{{ item | split('=') | last }}"
@@ -39,7 +37,7 @@
 # 3. Remove test database (default 11.4).
 - name: Remove all Annoymous Users
   community.mysql.mysql_user:
-    login_unix_socket: "/var/run/mysqld/mysqld.sock"
+    login_unix_socket: "{{ __mariadb_socket }}"
     login_password: "{{ mariadb_root_password }}"
     name: ""
     state: absent

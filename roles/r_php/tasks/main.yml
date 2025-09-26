@@ -15,8 +15,3 @@
     dest: "{{ php_fpm_conf_dest }}"
 - name: Enable PHP mods
   ansible.builtin.command: sudo phpenmod i-doit memcached
-- name: Ensure mysqli uses the correct socket path
-  ansible.builtin.lineinfile:
-    path: "/etc/php/{{ php_version }}/mods-available/mysqli.ini"
-    line: "mysqli.default_socket = /var/run/mysqld/mysqld.sock"
-    state: present

@@ -19,7 +19,7 @@
         mariadb_bind_address: "0.0.0.0"
     - name: Create i-doit Database User with needed priviliges
       community.mysql.mysql_user:
-        login_unix_socket: "/var/run/mysqld/mysqld.sock"
+        login_unix_socket: "{{ __mariadb_socket }}"
         name: "{{ idoit_db_user }}"
         password: "{{ idoit_db_user_password }}"
         host: "%"
@@ -54,7 +54,7 @@
       when: "idoit_backup_src != ''"
     - name: Restore Data from Backup
       community.mysql.mysql_db:
-        login_unix_socket: "/var/run/mysqld/mysqld.sock"
+        login_unix_socket: "{{ __mariadb_socket }}"
         name: all
         state: import
         target: "/tmp/{{ idoit_backup_src | basename }}"

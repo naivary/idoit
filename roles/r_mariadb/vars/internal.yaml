@@ -1,7 +1,1 @@
-mariadb_apt_repos:
-  - "deb [arch=amd64,arm64] https://dlm.mariadb.com/repo/mariadb-server/{{mariadb_version}}/repo/ubuntu {{ ansible_distribution_release }} main"
-  - "deb [arch=amd64,arm64] https://dlm.mariadb.com/repo/mariadb-server/{{mariadb_version}}/repo/ubuntu {{ ansible_distribution_release }} main/debug"
-  - "deb [arch=amd64,arm64] https://dlm.mariadb.com/repo/maxscale/latest/apt {{ ansible_distribution_release }} main"
-mariadb_gpg_key_url: "https://supplychain.mariadb.com/mariadb-keyring-2019.gpg"
-os_version_without_dot: "{{ ansible_distribution_version | replace('.', '') }}"
-mariadb_apt_version: "1:{{mariadb_version}}+maria~ubu{{ os_version_without_dot }}"
+
