@@ -1,7 +1,11 @@
+- name: Stop Apache Service
+  ansible.builtin.service:
+    name: apache2
+    state: stopped
 - name: Add VHOSTs with updated PHP-Version
   ansible.builtin.template:
     src: templates/apache.conf.j2
-    dest: "{{ apache_conf_dest }}"
+    dest: "{{ __apache_conf_dest }}"
 - name: Enable new VHOST Site
   ansible.builtin.command: sudo a2ensite i-doit
 - name: Restart Apache Service

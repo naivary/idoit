@@ -5,7 +5,7 @@
     - name: Is Idoit Version available
       ansible.builtin.assert:
         that:
-          - "idoit_version in __idoit_comp_matrix"
+          - "(idoit_version | int) in __idoit_comp_matrix"
         fail_msg: "Version {{ idoit_version }} is not supported. It might be that the version is already available on the official website but not implemented by the playbook."
     ## Extract all versions of the core components
     - name: Extract current RDBMS version
@@ -32,36 +32,35 @@
         login_password: "{{ idoit_db_user_password }}"
         login_db: "{{ idoit_system_database }}"
         query: "SELECT isys_db_init__value AS current_version FROM isys_db_init WHERE isys_db_init__id = 3"
-      register: idoit_version
+      register: idoit_version_sql
     - name: Set current i-doit version as fact for the host
       ansible.builtin.set_fact:
-        system_idoit_version: "{{ idoit_version['query_result'][0][0].current_version }}"
+        system_idoit_version: "{{ idoit_version_sql['query_result'][0][0].current_version }}"
     ## Assert if update is valid
     - name: Is desired version higher than current version
       ansible.builtin.assert:
         that:
-          - "idoit_version > (system_idoit_version | int)"
-        fail_msg: "you can not update to a version which is lower or equal to the current version. From: {{ current_version }}; To: {{ desired_version }}"
+          - "(idoit_version | int) > (system_idoit_version | int)"
+        fail_msg: "you can not update to a version which is lower or equal to the current version. From: {{ system_idoit_version }}; To: {{ idoit_version }}"
     - name: Is RDBMS version compatible
       ansible.builtin.assert:
         that:
-          - "idoit_comp_matrix[desired_version].mariadb_version <= (rdbms_version | float)"
-        fail_msg: "incompatible database versions. Have: {{ rdbms_version }}; Want: {{ idoit_comp_matrix[desired_version].mariadb_version }}"
+          - "__idoit_comp_matrix[idoit_version | int].mariadb_version <= (rdbms_version | float)"
+        fail_msg: "incompatible database versions. Have: {{ rdbms_version }}; Want: {{ __idoit_comp_matrix[idoit_version | int].mariadb_version }}"
     ## Compute required update path to the desired_version
     - name: "Compute required update path from {{ system_idoit_version }} to {{ idoit_version }}"
       ansible.builtin.set_fact:
         update_path: "{{ __idoit_comp_matrix | updatepath(system_idoit_version, idoit_version) }}"
     - name: "Update PHP version from {{ system_php_version }} to {{ __php_version }}"
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
         name: r_php
-      vars:
-        php_version: "{{ target_php_version }}"
+        tasks_from: update.yml
       when: "(__php_version | float) > (system_php_version | float)"
     ## Run the update
     - name: "Update i-doit version from {{ system_idoit_version }} to {{ idoit_version }} in the following order: {{ update_path | join('->') }}"
       ansible.builtin.include_role:
         name: r_idoit
-        tasks_from: update_to.yml
+        tasks_from: update.yml
       vars:
         to_version: "{{ item }}"
       loop: "{{ update_path }}"

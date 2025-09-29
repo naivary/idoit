@@ -1,6 +1,6 @@
 - name: "Get i-doit software v{{ idoit_version }}"
   ansible.builtin.get_url:
-    url: "{{ idoit_download_url }}"
+    url: "{{ __idoit_download_url }}"
     dest: "/tmp"
 - name: "Unzip to /var/www/html"
   ansible.builtin.unarchive:

@@ -7,12 +7,12 @@
 - name: Add new VHOSTs
   ansible.builtin.template:
     src: templates/apache.conf.j2
-    dest: "{{ apache_conf_dest }}"
+    dest: "{{ __apache_conf_dest }}"
 - name: Enable new VHOST Site
   ansible.builtin.command: sudo a2ensite i-doit
 - name: Enable required Apache Modules
   ansible.builtin.command: "sudo a2enmod {{ item }}"
-  loop: "{{ apache_modules }}"
+  loop: "{{ __apache_modules }}"
 - name: Restart Apache Service
   ansible.builtin.service:
     name: apache2
