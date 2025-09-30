@@ -45,3 +45,7 @@ SELECT isys_mandator__title, isys_mandator__db_host, isys_mandator__db_port, isy
 UPDATE isys_mandator SET isys_mandator__db_host = '192.168.56.41', isys_mandator__db_pass = '';
 ```
 
+## ROADMAP
+
+1. /var/www/html muss auf 755 gesetzt werde
+2. .htaccess muss auf 644 gesetzt werden.
