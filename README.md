@@ -57,3 +57,5 @@ found)
 
 4. config.inc.* werden nach update auf root gesetzt (owner) umstellen auf
    www-data 
+5. Vorherige Directories in dem Pfad /var/www/html m"ussen auch alle auf
+   www-data sein
