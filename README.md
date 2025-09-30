@@ -49,3 +49,11 @@ UPDATE isys_mandator SET isys_mandator__db_host = '192.168.56.41', isys_mandator
 
 1. /var/www/html muss auf 755 gesetzt werde
 2. .htaccess muss auf 644 gesetzt werden.
+3. sudo chown www-data:www-data -R .
+sudo find . -type d -name \* -exec chmod 775 {} \;
+sudo find . -type f -exec chmod 664 {} \;
+Das muss ausgef"uhrt werdden sonst kommt das Autoloader problem (class not
+found)
+
+4. config.inc.* werden nach update auf root gesetzt (owner) umstellen auf
+   www-data 
