@@ -44,6 +44,10 @@
       - "--password={{ idoit_admin_center_password }}"
       - "--zip={{ __update_dir }}/idoit-{{ to_version }}-update.zip"
       - "--v=v{{ to_version }}"
+- name: Set required permissions
+  ansible.builtint.include_role:
+    name: r_idoit
+    tasks_from: permissions.yml
 - name: "Set System i-doit version to {{ to_version }}"
   ansible.builtin.set_fact:
     system_idoit_version: "{{ to_version }}"

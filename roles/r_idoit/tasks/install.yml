@@ -9,12 +9,10 @@
     dest: "/var/www/html"
     owner: "www-data"
     group: "www-data"
-- name: Set permissions for directories
-  ansible.builtin.file:
-    path: "/var/www/html"
-    mode: '0775'
-    recurse: yes
-    state: directory
+- name: Set required permissions
+  ansible.builtint.include_role:
+    name: r_idoit
+    tasks_from: permissions.yml
 - name: Install i-doit
   ansible.builtin.command:
   args:
@@ -31,3 +29,4 @@
       - "--password={{ idoit_db_user_password }}"
       - "--admin-password={{ idoit_admin_center_password }}"
       - "--database={{ idoit_system_database }}"
+- name: Set Permissions:
