@@ -47,7 +47,7 @@
         that:
           - "__idoit_comp_matrix[idoit_version | int].mariadb_version <= (rdbms_version | float)"
         fail_msg: "incompatible database versions. Have: {{ rdbms_version }}; Want: {{ __idoit_comp_matrix[idoit_version | int].mariadb_version }}"
-    ## Compute required update path to the desired_version
+        ## Compute required update path to the desired_version
     - name: "Compute required update path from {{ system_idoit_version }} to {{ idoit_version }}"
       ansible.builtin.set_fact:
         update_path: "{{ __idoit_comp_matrix | updatepath(system_idoit_version, idoit_version) }}"
@@ -57,10 +57,16 @@
         tasks_from: update.yml
       when: "(__php_version | float) > (system_php_version | float)"
     ## Run the update
-    - name: "Update i-doit version from {{ system_idoit_version }} to {{ idoit_version }} in the following order: {{ update_path | join('->') }}"
+    - name: Gracefully shutdown webserver to avoid incoming requests while updating
+      ansible.builtin.command: sudo apachectl -k graceful-stop
+    - name: "Update i-doit version from {{ system_idoit_version }} to {{ idoit_version }} in the following order: {{ system_idoit_version}}->{{ update_path | join('->') }}"
       ansible.builtin.include_role:
         name: r_idoit
         tasks_from: update.yml
       vars:
         to_version: "{{ item }}"
       loop: "{{ update_path }}"
+    - name: Start back the webserver
+      ansible.builtin.service:
+        name: apache2
+        state: started

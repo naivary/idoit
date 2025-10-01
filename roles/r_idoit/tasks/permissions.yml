@@ -7,24 +7,14 @@
 - name: make html dir executeable for apache2
   ansible.builtin.file:
     path: "/var/www/html"
-    chmod: 0755
-- name: Ensure correct directory permissions
-  ansible.builtin.find:
-    paths: /var/www/html
-    file_type: directory
-  register: dirs
-- name: Set directory permissions to 0755
-  ansible.builtin.file:
-    path: "{{ item.path }}"
     mode: '0755'
-  loop: "{{ dirs.files }}"
+## For performance resasons we dont use the find module (as recommended by the
+# official documentation)
+- name: Ensure correct directory permissions
+  ansible.builtin.command: "sudo find . -type d -name \\* -exec chmod 775 {} \\;"
+  args:
+    chdir: "/var/www/html"
 - name: Ensure correct file permissions
-  ansible.builtin.find:
-    paths: /var/www/html
-    file_type: file
-  register: files
-- name: Set file permissions to 0644
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    mode: '0644'
-  loop: "{{ files.files }}"
+  ansible.builtin.command: "sudo find . -type f -exec chmod 664 {} \\;"
+  args:
+    chdir: "/var/www/html"

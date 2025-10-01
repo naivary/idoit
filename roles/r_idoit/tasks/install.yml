@@ -10,7 +10,7 @@
     owner: "www-data"
     group: "www-data"
 - name: Set required permissions
-  ansible.builtint.include_role:
+  ansible.builtin.include_role:
     name: r_idoit
     tasks_from: permissions.yml
 - name: Install i-doit
@@ -29,4 +29,3 @@
       - "--password={{ idoit_db_user_password }}"
       - "--admin-password={{ idoit_admin_center_password }}"
       - "--database={{ idoit_system_database }}"
-- name: Set Permissions:
