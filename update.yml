@@ -66,6 +66,10 @@
       vars:
         to_version: "{{ item }}"
       loop: "{{ update_path }}"
+    - name: Set required permissions
+      ansible.builtin.include_role:
+        name: r_idoit
+        tasks_from: permissions.yml
     - name: Start back the webserver
       ansible.builtin.service:
         name: apache2
