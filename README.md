@@ -45,17 +45,14 @@ SELECT isys_mandator__title, isys_mandator__db_host, isys_mandator__db_port, isy
 UPDATE isys_mandator SET isys_mandator__db_host = '192.168.56.41', isys_mandator__db_pass = '';
 ```
 
-## ROADMAP
+# Production use
 
-1. /var/www/html muss auf 755 gesetzt werde
-2. .htaccess muss auf 644 gesetzt werden.
-3. sudo chown www-data:www-data -R .
-sudo find . -type d -name \* -exec chmod 775 {} \;
-sudo find . -type f -exec chmod 664 {} \;
-Das muss ausgef"uhrt werdden sonst kommt das Autoloader problem (class not
-found)
+If you used the default passwords for the users make sure to change the
+passwords to something strong. Otherwise you are exposed. The following
+passwords should be changed:
 
-4. config.inc.* werden nach update auf root gesetzt (owner) umstellen auf
-   www-data 
-5. Vorherige Directories in dem Pfad /var/www/html m"ussen auch alle auf
-   www-data sein
+- idoit database user
+- admin user (admin center)
+
+Furthermore, make sure idoit is not bind to a network interfaces (0.0.0.0) but
+to a specific one facing outwards.
