@@ -56,3 +56,11 @@ passwords should be changed:
 
 Furthermore, make sure idoit is not bind to a network interfaces (0.0.0.0) but
 to a specific one facing outwards.
+
+## How-to
+
+### Administration wrong link (idoit version 36)
+
+```sql
+UPDATE isys_settings SET isys_settings__value = '<new url>' WHERE isys_settings__key = 'system.base.uri';
+```
